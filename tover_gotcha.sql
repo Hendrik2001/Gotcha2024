@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 31, 2018 at 05:58 PM
+-- Generation Time: Mar 31, 2018 at 08:10 PM
 -- Server version: 10.1.31-MariaDB
 -- PHP Version: 7.2.3
 
@@ -46,6 +46,13 @@ CREATE TABLE `kills` (
   `time` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+--
+-- Dumping data for table `kills`
+--
+
+INSERT INTO `kills` (`id`, `killer_id`, `deceased_id`, `time`) VALUES
+(1, 3, 4, '2018-03-30 11:23:35');
+
 -- --------------------------------------------------------
 
 --
@@ -69,7 +76,8 @@ CREATE TABLE `players` (
 INSERT INTO `players` (`id`, `beer`, `name`, `own_code`, `id_to_kill`, `is_dead`, `is_playing`) VALUES
 (1, 1, 'Jari', 'GM27', 2, 0, 1),
 (2, 2, 'Jurgen', '1815', 3, 0, 1),
-(3, 3, 'Peter', '27GM', 1, 0, 1);
+(3, 3, 'Peter', '27GM', 1, 0, 1),
+(4, 4, 'Dood', 'MUTUA', 1, 1, 1);
 
 --
 -- Indexes for dumped tables
@@ -107,13 +115,13 @@ ALTER TABLE `auth`
 -- AUTO_INCREMENT for table `kills`
 --
 ALTER TABLE `kills`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `players`
 --
 ALTER TABLE `players`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
