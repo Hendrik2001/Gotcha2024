@@ -1,5 +1,6 @@
 <?php
 include_once("config.php");
+include_once("settings.php");
 
 session_start();
 // Check if we are logged in or are trying to login 
@@ -50,6 +51,7 @@ function handle_session($beer, $pdo) {
 		$own_code = $player["own_code"];
 		$is_playing = $player["is_playing"] === "1" ? true : false;
 		$target_id = $player["id_to_kill"];
+		$id = $player["id"];
 
 		$stmt = $pdo->prepare("SELECT name FROM players WHERE id=:id");
 		$stmt -> execute(["id"=>$target_id]);
@@ -58,6 +60,7 @@ function handle_session($beer, $pdo) {
 		$is_playing = false;
 	}
 
+	$_SESSION["id"] = $id;
 	$_SESSION["beer"] = $beer;
 	$_SESSION["name"] = $name;
 	$_SESSION["login"] = true;

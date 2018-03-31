@@ -27,6 +27,15 @@ li {
 	font-weight: bolder;
 }
 
+.logged-in-as {
+	position: absolute;
+	right: 1rem;
+	top: 1rem;
+	font-size: 12px;
+	font-style: italic;
+	max-width: 30%;
+}
+
 .float-bottom {
 	position: absolute;
 	margin: 1rem;

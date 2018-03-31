@@ -1,4 +1,7 @@
 <?php
+include_once('settings.php');
+include_once('config.php');
+
 session_start();
 if (!isset($_SESSION["login"]) || $_SESSION["login"] !== true) {
   header("location: index.php");
@@ -22,28 +25,28 @@ if (!isset($_SESSION["login"]) || $_SESSION["login"] !== true) {
 <body>
   <div class="container my-5">
     <div class="row">
-      <div class="col-lg-8">
+      <div class="col-lg-8 bg-light">
 <?php
 // if the player logged in is playing and alive and the game has started (TODO), show them the dashboard 
-if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false) {
+if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameStarted === true) {
 ?>
         <div class="row">
-          <div class="col-12 bg-light p-3">
+          <div class="col-12 p-3">
             <h2>Je target is <strong class="px-2 secret" id="person" onclick="toggleSpoiler(this.id)" data-secret="<?php echo $_SESSION["target"]; ?>">klik om te tonen</strong></h2>
             <p>Je iemand weet dat hij jouw target is, kan hij je ontwijken. Dus houd je target geheim tot je je slag slaat!</p>
-            <p>Je hebt nog <strong>{{tijd over tot reset}}</strong> om iemand te vermoorden, anders lig je uit het spel.</p>
+            <p>Je hebt nog tot <strong><?php printEndOfRound($week); ?></strong> om ten minste één persoon te vermoorden, anders lig je uit het spel.</p>
           </div>
         </div>
         <div class="row">
-          <div class="col-12 bg-light p-3">
+          <div class="col-12 p-3">
             <h2>Je geheime code is <strong class="px-2 secret" id="code" onclick="toggleSpoiler(this.id)" data-secret="<?php echo $_SESSION["own_code"]; ?>">klik om te tonen</strong></h2>
-            Als iemand deze code ontdekt kan hij je doodmaken, dus houd hem geheim tot je vermoord bent!
+            Als je target deze code ontdekt kan hij je doodmaken, dus houd hem geheim tot je vermoord bent!
           </div>
         </div>
         <div class="row">
-          <div class="col-12 bg-light p-3">
+          <div class="col-12 p-3">
             <h2> Ik heb iemand vermoord! </h2>
-            Als je iemand hebt vermoord, voer dan hieronder de code in en druk op verzenden. Je krijgt dan direct te horen wie je hierna moet vermoorden.
+            Als je iemand hebt vermoord, voer dan hieronder zijn of haar code in en druk op verzenden. Je krijgt dan direct te horen wie je hierna moet vermoorden.
             <form class="form-inline pt-3" id="submit-code-form" action="">
               <div class="row">
                 <div class="col">
@@ -59,46 +62,46 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false) {
         </div>
 <?php
 // if the player is playing an overview of their kills and (possibly) death (and the game has started) TODO
-} elseif ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === true) {
+} if ($_SESSION["is_playing"] === true && $gameStarted === true) {
 ?>
         <div class="row">
-          <div class="col-12 bg-light p-3">
+          <div class="col-12 p-3">   
             <h2> Overzicht </h2>
             Je bent betrokken geweest bij de volgende moorden: 
+            //TODO
           </div>
         </div>
 <?php
-// if the player is not playing but can still sign up (and the game has not started) TODO
-// TODO add start date
-} elseif ($_SESSION["is_playing"] === false ) {
+// if the player is not playing but can still sign up (and the game has not started)
+} if ($_SESSION["is_playing"] === false && $gameStarted === false) {
 ?>
         <div class="row">
-          <div class="col-12 bg-light p-3">
+          <div class="col-12 p-3">          
             <h2> Aanmelden </h2>
-            Gotcha is nog niet begonnen. Wil je je aanmelden? (Kosten: &euro; 10,- op je beer)
-            <a class="btn btn-success" href="signup.php"> Aanmelden </a>
+            <p>Gotcha is nog niet begonnen. Het begint op <strong><?php printStartDate() ?></strong>. Wil je je aanmelden? (Kosten: &euro; 10,- op je beer)
+            <a class="btn btn-success" href="subscribe.php"> Aanmelden </a>
           </div>
         </div>
 
 <?php
 // if the player is playing but the game hasn't started, he can stop signing up TODO
-} elseif ($_SESSION["is_playing"] === true ) {
+} if ($_SESSION["is_playing"] === true && $gameStarted === false) {
 ?>
         <div class="row">
-          <div class="col-12 bg-light p-3">
+          <div class="col-12 p-3">         
             <h2> Afmelden </h2>
-            Je bent aangemeld voor Gotcha. Wil je je afmelden?
-            <a class="btn btn-danger" href="signup.php"> Afmelden </a>
+            Je bent aangemeld voor Gotcha. Het begint op <strong><?php printStartDate() ?></strong>. Wil je je afmelden?
+            <a class="btn btn-danger" href="unsubscribe.php"> Afmelden </a>
           </div>
         </div>
 
 <?php
 // if the player is not playing and the game has started, he can only see the highscores TODO
-} elseif ($_SESSION["is_playing"] === false ) {
+} if ($_SESSION["is_playing"] === false && $gameStarted === true) {
 ?>
       
         <div class="row">
-          <div class="col-12 bg-light p-3">
+          <div class="col-12 p-3">
             <h2> Helaas Pindakaas </h2>
             Gotcha is al begonnen... Volgend jaar kan je wel meedoen!
           </div>
@@ -111,7 +114,28 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false) {
       </div>
       <div class="col-lg-4 bg-light p-3">
         <h2 class="text-center">Beste moordenaars</h2>
-        <ol class="list-group d-flex pl-3">
+<?php
+if ($gameStarted) {
+  $stmt = $pdo->prepare("SELECT p.name, k.killer_id, COUNT(*) as nr FROM kills k, players p WHERE p.id=k.killer_id GROUP BY killer_id ORDER BY nr LIMIT 10");
+  $stmt->execute();
+  $results=$stmt->fetchAll();
+  if ($results) {
+    echo '<ol class="list-group d-flex pl-3">';
+    foreach($results as $topkiller) {
+      if ($topkiller['killer_id'] === $_SESSION['id']) {
+        echo '<li class="list-item border-bottom its-me">' . $topkiller['name'];
+        echo '<span class="float-right font-weight-bold">'. $topkiller['nr'] .' 💀</span></li>';
+      } else {
+        echo '<li class="list-item border-bottom">' . $topkiller['name'];
+        echo '<span class="float-right font-weight-bold">'. $topkiller['nr'] .' 💀</span></li>';
+      }
+    }
+    echo '</ol>';
+  } else {
+    echo "Er is nog niemand vermoord.";
+  }
+?>
+        <!--<ol class="list-group d-flex pl-3">
           <li class="list-item border-bottom its-me">Player 1
             <span class="float-right font-weight-bold">5 💀</span>
           </li>
@@ -147,7 +171,14 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false) {
           <li class="list-item border-bottom">Player 6
             <span class="float-right font-weight-bold">0 💀</span>
           </li>
-        </ol>
+        </ol>-->
+<?php
+} else {
+?>
+        Hier verschijnen de beste moordenaars, zodra het spel begonnen is!
+<?php
+}
+?>
         <div style="width:100%; height: auto">
           <a class="btn btn-lg btn-primary btn-sm btn-block mt-3" href="logout.php" >Uitloggen</a>
         </div>
