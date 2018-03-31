@@ -22,7 +22,7 @@ function printEndOfRound($week) {
 }
 
 function printStartDate() {
-	echo "zaterdag 21 april om 23:49";
+	echo "zaterdag 21 april om 23:59";
 }
 
 
