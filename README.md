@@ -2,7 +2,8 @@
 Website voor het jaarlijkse Gotcha spel, georganiseerd door Tover
 
 TODO 
-- Aanmelden/afmelden
+- ~~Aanmelden/afmelden~~
+- Ledengegevens inladen (beernummer + naam).
 - Verdelen kaartjes (automatisch?)
 - Mensen killen aan eind van ronde (automatisch?)
 - Weergeven of mensen al kills hebben in ronde
