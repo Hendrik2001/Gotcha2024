@@ -8,7 +8,7 @@ if (!isset($_SESSION["login"]) || $_SESSION["login"] !== true) {
 } elseif (!isset($_POST["secret-code"])) {
 	$error = "Je hebt geen code ingevuld :(";
 } else {
-	//verify code & update indien nodig
+	//verify code & update indien nodig (make sure to ignore case or force uppercase)
 }
 
 //todo
