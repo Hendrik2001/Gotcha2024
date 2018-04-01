@@ -1,6 +1,6 @@
 <?php
-include_once("config.php");
-include_once("settings.php");
+include_once("includes/config.php");
+include_once("includes/settings.php");
 
 session_start();
 // Check if we are logged in or are trying to login 

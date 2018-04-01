@@ -1,6 +1,6 @@
 <?php
-include_once('settings.php');
-include_once('config.php');
+include_once('includes/settings.php');
+include_once('includes/config.php');
 
 session_start();
 if (!isset($_SESSION["login"]) || $_SESSION["login"] !== true) {
