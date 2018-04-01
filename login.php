@@ -21,6 +21,9 @@ if (!isset($_POST["inputBeer"]) || !isset($_POST["inputWachtwoord"])) {
 		handle_session($beer, $pdo);
 		header("Location: main.php");
 		exit();
+	} else {
+		header("Location: index.php?error=1");
+		exit();
 	}
 }
 

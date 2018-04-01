@@ -1,8 +1,12 @@
 <?php 
   session_start();
+  $error = null;
   if (isset($_SESSION['login']) && $_SESSION['login'] === true) {
     header('Location: main.php');
     exit();
+  }
+  if (isset($_GET['error'])) {
+    $error = "Je wachtwoord en/of gebruikersnaam is incorrect.";
   }
 ?>
 <!doctype html>
@@ -24,9 +28,15 @@
     <form class="form-signin" action="login.php" method="POST">
       <img class="mb-4" src="https://getbootstrap.com/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
       <h1 class="h3 mb-3 font-weight-normal">Tover presenteert vol trots... Gotcha!</h1>
+      <?php if ($error) { ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+          <strong>Fout!</strong> <?php echo $error;?>
+        </div>
+      <?php } ?>
       <label for="inputBeer" class="sr-only">Beernummer</label>
       <input type="text" name="inputBeer" class="form-control" placeholder="Beernummer" required autofocus>
-      <label for="inputWachtwoord" class="sr-only">Password</label>
+      <label for="inputWachtwoord" class="sr-only">Wachtwoord</label>
       <input type="password" name="inputWachtwoord" class="form-control" placeholder="Wachtwoord" required>
       <div class="checkbox mb-3">
         <!--<label>
