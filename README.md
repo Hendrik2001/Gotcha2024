@@ -4,11 +4,17 @@ Website voor het jaarlijkse Gotcha spel, georganiseerd door Tover
 TODO 
 - ~~Aanmelden/afmelden~~
 - Ledengegevens inladen (beernummer + naam).
-- Verdelen kaartjes (automatisch?)
+- ~~Verdelen kaartjes (automatisch?)~~
+	- ~~Aanmaken codes~~
+	- ~~Verdelen targets~~
+	- ~~Resetopties~~
+	- ~~Inbouwen in adminpaneel~~
+- ~~Adminpaneel~~ (admin:ToverGotchaAdmin)
 - Mensen killen aan eind van ronde (automatisch?)
 - Weergeven of mensen al kills hebben in ronde
 - Definitief maken van begintijd en ronde momenten (vraag Tover)
 - Server opzetten (@Jurgen?)
+- Hoe kunnen we het beste met tijden werken? Timestamps? Datetimes in GTM+1?
 - Verifieren van code en mensen op dood zetten
 - LoginToSite fixen
 
