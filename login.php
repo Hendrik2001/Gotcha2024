@@ -29,9 +29,10 @@ function login_to_site($beer, $pass) {
 	// log in as admin or with vindicat site
 	if (strtolower($beer) === "admin" && $pass === "ToverGotchaAdmin") {
 		return true;
-	} else {
-	//	return false;
+	} elseif ($beer === "admin" && $pass !== "ToverGotchaAdmin") {
+		return false;
 	}
+	return true;
 }
 
 ?>
