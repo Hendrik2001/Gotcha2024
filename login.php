@@ -26,11 +26,12 @@ if (!isset($_POST["inputBeer"]) || !isset($_POST["inputWachtwoord"])) {
 
 // TODO: login to vindicat.nl
 function login_to_site($beer, $pass) {
-	//if (strtolower($beer) === "admin" && $pass === "GM1815") {
+	// log in as admin or with vindicat site
+	if (strtolower($beer) === "admin" && $pass === "ToverGotchaAdmin") {
 		return true;
-	//} else {
+	} else {
 	//	return false;
-	//}
+	}
 }
 
 ?>

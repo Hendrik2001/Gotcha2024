@@ -27,6 +27,27 @@ if (!isset($_SESSION["login"]) || $_SESSION["login"] !== true) {
     <div class="row">
       <div class="col-lg-8 bg-light">
 <?php
+// admin screen
+if (isset($_SESSION["beer"]) && $_SESSION["beer"] === "admin") {
+?>
+
+        <div class="row">
+          <div class="col-12 p-3">
+            <h2>Beheerpaneel</h2>
+            Vanaf hier kan je het spel klaarzetten. <?php 
+            if ($peopleWithoutTargetOrCode == 1) { 
+              echo "Er is op dit moment nog één persoon zonder target of code. Resetten en opnieuw aanmaken!";
+            } elseif ($peopleWithoutTargetOrCode == 0) {
+              echo "Er is niemand zonder code of target.<br> <strong>Het spel kan beginnen!</strong>";
+            } else {
+              echo "Er zijn op dit moment nog " . $peopleWithoutTargetOrCode . " mensen zonder target of code. Resetten en opnieuw aanmaken!";
+            } ?><br>
+            <a href="begin_game.php?function=reset_all" class="btn btn-danger">Reset targets en codes</a><a href="begin_game.php?function=generate_all" class="btn btn-success ml-3">Genereer targets en codes</a>
+          </div>
+        </div>
+
+<?php
+}
 // if the player logged in is playing and alive and the game has started (TODO), show them the dashboard 
 if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameStarted === true) {
 ?>
@@ -84,7 +105,8 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
         </div>
 
 <?php
-// if the player is playing but the game hasn't started, he can stop signing up TODO
+// if the player is playing but the game hasn't started, he can stop signing up
+// afmelden weghalen
 } if ($_SESSION["is_playing"] === true && $gameStarted === false) {
 ?>
         <div class="row">
