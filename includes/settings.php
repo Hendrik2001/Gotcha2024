@@ -1,4 +1,5 @@
 <?php
+// sets gamestarted to true or false depending on the current time
 $gameStarted = false;
 
 $timestampStart = 1524355140; //04/21/2018 @ 23:59pm (UTC) (zorg dat deze goed staat voor de functie hieronder)
@@ -27,7 +28,7 @@ function printStartDate() {
 
 
 
-//$gameStarted = true;
+// $gameStarted = true;
 // todo settings like gamestarted
 // round finished, tijd to reset
 ?>
