@@ -5,6 +5,7 @@ include_once("config.php");
 $gameStarted = false;
 
 
+$GLOBALS['pdo'] = $pdo;
 // check of er mensen zonder code zijn die wel meespelen
 $peopleWithoutTargetOrCode = -1;
 $sql = "SELECT count(*) as `not_ready` FROM `players` WHERE `is_playing`=1 AND (`own_code` IS NULL OR `id_to_kill` IS NULL)";
@@ -38,8 +39,18 @@ function printStartDate() {
 }
 
 
+function isDead($playerId) {
+    $pdo = $GLOBALS['pdo'];
+    $sql = "SELECT count(*) as `is_killed` FROM `kills` WHERE `deceased_id`= ?";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(array($playerId));
+    return $stmt->fetch()["is_killed"] != 0;
+}
 
-// $gameStarted = true;
+echo(isDead(2));
+
+
+ $gameStarted = true;
 // todo settings like gamestarted
 // round finished, tijd to reset
 ?>
