@@ -39,15 +39,15 @@ function printStartDate() {
 }
 
 
-function isDead($playerId) {
-    $pdo = $GLOBALS['pdo'];
-    $sql = "SELECT count(*) as `is_killed` FROM `kills` WHERE `deceased_id`= ?";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(array($playerId));
-    return $stmt->fetch()["is_killed"] != 0;
-}
+// function isDead($playerId) {
+//     $pdo = $GLOBALS['pdo'];
+//     $sql = "SELECT count(*) as `is_killed` FROM `kills` WHERE `deceased_id`= ?";
+//     $stmt = $pdo->prepare($sql);
+//     $stmt->execute(array($playerId));
+//     return $stmt->fetch()["is_killed"] != 0;
+// }
 
-echo(isDead(2));
+// echo(isDead(2));
 
 
  $gameStarted = true;

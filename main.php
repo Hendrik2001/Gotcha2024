@@ -48,7 +48,7 @@ if (isset($_SESSION["beer"]) && $_SESSION["beer"] === "admin") {
 
 <?php
 }
-// if the player logged in is playing and alive and the game has started (TODO), show them the dashboard 
+// main dashboard for alive players
 if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameStarted === true) {
 ?>
         <div class="row">
@@ -82,18 +82,51 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
           </div>
         </div>
 <?php
-// if the player is playing an overview of their kills and (possibly) death (and the game has started) TODO
+// player already dead.
+} if ($_SESSION["is_playing"] && $_SESSION["is_dead"]) {
+  $killer = null;
+  $date = null;
+  $stmt = $pdo->prepare("SELECT p.name, k.time FROM kills k INNER JOIN players p ON k.`killer_id` = p.id WHERE k.deceased_id = :my_id");
+  $stmt->execute((array(":my_id" => $_SESSION["id"])));
+  $result=$stmt->fetch();
+  if ($result) {
+    $killer = $result["name"];
+    $date = $result["time"];
+  }
+?>
+  <div class="row">
+          <div class="col-12 p-3">   
+            <h2> Vermoord :( </h2>
+            Je bent helaas vermoord door <strong><?php echo $killer; ?></strong> op <strong><?php echo $date;?></strong>.
+          </div>
+        </div>
+<?php
+// if player has played and game has started. show kills
 } if ($_SESSION["is_playing"] === true && $gameStarted === true) {
 ?>
         <div class="row">
           <div class="col-12 p-3">   
             <h2> Overzicht </h2>
-            Je bent betrokken geweest bij de volgende moorden: 
-            //TODO
+            Je bent betrokken geweest bij de volgende moorden:
+            <?php
+            // TODO fix murders
+              $myId = $_SESSION["id"];
+              $stmt = $pdo->prepare("SELECT k.deceased_id, k.killer_id, k.time, p.name AS killername, p.name AS deceasedname FROM kills WHERE deceased_id=? OR killer_id=?");
+              $stmt->execute(array($myId,$myId);
+              $results = $stmt->fetchAll();
+              if ($results) {
+                echo "<ul>";
+                for ($results as $row) {
+                  if ($row["killer_id"] == $myId) {
+                    echo "<li>Je hebt "
+                  }
+                }
+              }
+            ?>
           </div>
         </div>
 <?php
-// if the player is not playing but can still sign up (and the game has not started)
+// signup before game has started
 } if ($_SESSION["is_playing"] === false && $gameStarted === false) {
 ?>
         <div class="row">
@@ -105,8 +138,7 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
         </div>
 
 <?php
-// if the player is playing but the game hasn't started, he can stop signing up
-// afmelden weghalen
+// sign off before game has started
 } if ($_SESSION["is_playing"] === true && $gameStarted === false) {
 ?>
         <div class="row">
@@ -118,7 +150,7 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
         </div>
 
 <?php
-// if the player is not playing and the game has started, he can only see the highscores TODO
+// not playing -> too late for sign up
 } if ($_SESSION["is_playing"] === false && $gameStarted === true) {
 ?>
       
@@ -130,7 +162,7 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
         </div>
 
 <?php
-}
+} // highscores
 ?>
 
       </div>

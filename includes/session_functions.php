@@ -3,18 +3,18 @@
 /*
  *	Retrieve and set session vars, such as name, id, etc
  */
-function handle_session($beer, $pdo) {
+function update_session($beer, $pdo) {
 
 	// default values
 	$id = null;
 	$name = null;
 	$target = null;
 	$own_code = null;
-	$is_dead = null;
+	$is_dead = false;
 	$is_playing = false;
 
 	// retrieve player data if signed up
-	$stmt = $pdo->prepare("SELECT id, name, own_code, id_to_kill, is_dead, is_playing FROM players WHERE beer=:beer");
+	$stmt = $pdo->prepare("SELECT id, name, own_code, id_to_kill, is_playing FROM players WHERE beer=:beer");
 	$stmt->execute([":beer" => $beer]);
 	$player = $stmt->fetch();
 
@@ -30,6 +30,14 @@ function handle_session($beer, $pdo) {
 		$stmt = $pdo->prepare("SELECT name FROM players WHERE id=:target_id");
 		$stmt -> execute(["target_id"=>$target_id]);
 		$target = $stmt->fetchColumn();
+
+		// check if dead
+		$stmt = $pdo->prepare("SELECT `id` FROM `kills` WHERE `deceased_id`=:my_id");
+		$stmt->execute(array(":my_id" => $id));
+		$result = $stmt->fetch();
+		if ($result !== false) {
+			$is_dead = true;
+		}
 	}
 
 

@@ -18,7 +18,7 @@ if (!isset($_POST["inputBeer"]) || !isset($_POST["inputWachtwoord"])) {
 
 	$loggedin = login_to_site($beer, $pass);
 	if ($loggedin !== false) {
-		handle_session($beer, $pdo);
+		update_session($beer, $pdo);
 		header("Location: main.php");
 		exit();
 	} else {
