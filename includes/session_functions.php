@@ -20,7 +20,6 @@ function update_session($beer, $pdo) {
 
 	if ($player) {
 		$name = $player["name"];
-		$is_dead = $player["is_dead"] === "1" ? true : false;
 		$own_code = $player["own_code"];
 		$is_playing = $player["is_playing"] === "1" ? true : false;
 		$id = $player["id"];

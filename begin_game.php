@@ -37,6 +37,9 @@ if (isset($_GET["function"])) {
 			generate_codes(15, $pdo, true);
 			generate_targets($pdo);
 			break;
+		case "reset_kills":
+			reset_kills($pdo);
+			break;
 	}
 } else {
 	echo "Gebruik één van de volgende functies: <pre>generate_codes, generate_targets, generate_all reset_codes, reset_targets, reset_all </pre><br>";
@@ -176,5 +179,15 @@ function reset_targets($pdo) {
 		echo "<span style=\"color: red\">Probleem tijdens resetten van de targets.</span>";
 	}
 	echo "<span style='color:green'>Oude targets zijn gereset.</span><br>";
+}
+
+function reset_kills($pdo) {
+	echo "Beginnen met resetten van de kills...<br>";
+	$sql = "DELETE FROM kills";
+	$result = $pdo->exec($sql);
+	if ($result === false) {
+		echo "<span style=\"color: red\">Probleem tijdens het resetten van de kills.</span>";
+	}
+	echo "<span style='color:green'>Alle kills zijn gereset.</span><br>";
 }
 ?>

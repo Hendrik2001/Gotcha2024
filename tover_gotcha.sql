@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 02, 2018 at 12:38 AM
+-- Generation Time: Apr 05, 2018 at 01:14 AM
 -- Server version: 10.1.31-MariaDB
 -- PHP Version: 7.2.3
 
@@ -40,7 +40,11 @@ CREATE TABLE `kills` (
 --
 
 INSERT INTO `kills` (`id`, `killer_id`, `deceased_id`, `time`) VALUES
-(1, 3, 4, '2018-03-30 11:23:35');
+(3, 1, 4, '2018-04-05 00:54:21'),
+(4, 1, 3, '2018-04-05 00:55:31'),
+(5, 1, 2, '2018-04-05 00:59:23'),
+(6, 1, 30, '2018-04-05 01:00:52'),
+(7, 1, 31, '2018-04-05 01:02:57');
 
 -- --------------------------------------------------------
 
@@ -71,9 +75,8 @@ CREATE TABLE `players` (
   `id` int(11) NOT NULL,
   `beer` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `own_code` varchar(16) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `own_code` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `id_to_kill` int(11) DEFAULT NULL,
-  `is_dead` tinyint(1) NOT NULL DEFAULT '0',
   `is_playing` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -81,13 +84,13 @@ CREATE TABLE `players` (
 -- Dumping data for table `players`
 --
 
-INSERT INTO `players` (`id`, `beer`, `name`, `own_code`, `id_to_kill`, `is_dead`, `is_playing`) VALUES
-(1, 1, 'Jari', NULL, NULL, 0, 1),
-(2, 2, 'Jurgen', NULL, NULL, 0, 1),
-(3, 3, 'Peter', NULL, NULL, 0, 1),
-(4, 4, 'Dood', NULL, NULL, 1, 1),
-(30, 5, 'Pim de Vries', NULL, NULL, 0, 1),
-(31, 6, 'Egbert Janssen', NULL, NULL, 0, 0);
+INSERT INTO `players` (`id`, `beer`, `name`, `own_code`, `id_to_kill`, `is_playing`) VALUES
+(1, 1, 'Jari', 'CLUB-PK-HOEK-TITS', 1, 1),
+(2, 2, 'Jurgen', 'GM-LID-GAST-OOTJE', -1, 1),
+(3, 3, 'Peter', 'PLOEG-PIANO-TITS', -1, 1),
+(4, 4, 'Sharif', 'VO-KEI-CLUB-ADT', -1, 1),
+(30, 5, 'Pim de Vries', 'SUB3D-KNOR-BEER', -1, 1),
+(31, 6, 'Egbert Janssen', 'STUCA-SFEER-KEI', -1, 1);
 
 --
 -- Indexes for dumped tables
@@ -120,13 +123,13 @@ ALTER TABLE `players`
 -- AUTO_INCREMENT for table `kills`
 --
 ALTER TABLE `kills`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `players`
 --
 ALTER TABLE `players`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
