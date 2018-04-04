@@ -111,16 +111,19 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
             <?php
             // TODO fix murders
               $myId = $_SESSION["id"];
-              $stmt = $pdo->prepare("SELECT k.deceased_id, k.killer_id, k.time, p.name AS killername, p.name AS deceasedname FROM kills WHERE deceased_id=? OR killer_id=?");
-              $stmt->execute(array($myId,$myId);
+              $stmt = $pdo->prepare("SELECT k.deceased_id, k.killer_id, k.time, p1.name AS killername, p2.name AS deceasedname FROM kills k JOIN players p1 ON p1.id = k.killer_id JOIN players p2 ON p2.id = k.deceased_id WHERE deceased_id=? OR killer_id=?");
+              $stmt->execute(array($myId,$myId));
               $results = $stmt->fetchAll();
               if ($results) {
                 echo "<ul>";
-                for ($results as $row) {
+                foreach ($results as $row) {
                   if ($row["killer_id"] == $myId) {
-                    echo "<li>Je hebt "
+                    echo "<li>Je hebt <strong>" . $row["deceasedname"] . "</strong> vermoord op <strong>" . $row["time"] . "</strong>.</li>";
+                  } else {
+                    echo "<li>Je bent vermoord door <strong>" . $row["killername"] . "</strong> op <strong>" . $row["time"] . "</strong>.</li>";
                   }
                 }
+                echo "</ul>";
               }
             ?>
           </div>

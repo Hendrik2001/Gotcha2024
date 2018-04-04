@@ -28,13 +28,13 @@ if (isset($_GET["function"])) {
 			reset_codes($pdo);
 			break;
 		case "generate_codes":
-			generate_codes(7, $pdo);
+			generate_codes(15, $pdo, true);
 			break;
 		case "generate_targets":
 			generate_targets($pdo);
 			break;
 		case "generate_all":
-			generate_codes(7, $pdo);
+			generate_codes(15, $pdo, true);
 			generate_targets($pdo);
 			break;
 	}
@@ -97,13 +97,18 @@ function generate_targets($pdo) {
 /*
  * Generate a random and unique string (= code) for every player.
  */
-function generate_codes($length = 10, $pdo) {
+function generate_codes($length = 10, $pdo, $useFancyPasswords = false) {
 	reset_codes($pdo);
 
 	echo "Beginnen met aanmaken van codes... <br>";
 	$characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 	$max = strlen($characters) - 1;
-	$currentCodes = [];
+
+	if ($useFancyPasswords) {
+		$characters = ["GM","27","1815","VAP","MUFI","1815","VO","MF","CORPS","KROEG","LID","MEUI","PAIP","PLOEG","HOEK","FOET","HO","OH","BEER","UB","CZ","HP","RHINO","BUIS","LAIR","ICE","BAV","KRAT","BIER","BLAD","KNOR","PAND","MENSA","SUB3D","CLUB","JC","HUIS","PANDA","SUSHI","KAAL","BACO","EKZ","HENK","PK","PIANO","STUCA","JORIS","JAS","DAS","VINDI","BAL","RIET","ADT","IT","CTTIT","TITS","SOA","KEI","PILS","GK","SFEER","GAST","AMIGO","PIK","LEDEN","MUTUA","LID","FIDES","VALTHO","RAPTAP","TGIF","OOTJE","RAKEN","BRAK","VOLAF"];
+		$max = count($characters) - 1;
+	}
+
 
 	$sql = "SELECT id, own_code FROM players WHERE is_playing=1";
 	$stmt = $pdo->prepare($sql);
@@ -122,12 +127,20 @@ function generate_codes($length = 10, $pdo) {
 	$insertStmt = $pdo->prepare("UPDATE `players` SET `own_code`=:code WHERE `id`=:id");
 
 	$string = '';
+	$currentCodes = [];
 	foreach($result as $row) {
 
 		do {
 			$string = '';
-			for ($i = 0; $i < $length; $i++) {
+			for ($i = 0; strlen($string) < $length; $i++) {
 				$string .= $characters[mt_rand(0, $max)];
+				if ($useFancyPasswords) {
+					$string .= "-";
+				}
+			}
+			// remove last -
+			if ($useFancyPasswords) {
+				$string = substr($string, 0, -1);
 			}
 		} while (in_array($string, $currentCodes));
 		// unique string is generated now
