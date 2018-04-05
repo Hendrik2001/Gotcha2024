@@ -54,7 +54,7 @@ function printStartDate() {
  $gameStarted = true;
 
 // count number of active and alive players
- $sql = "SELECT count(*) AS alive FROM `players` WHERE `is_playing` = 1 AND `id_to_kill` != -1";
+ $sql = "SELECT count(*) as alive FROM `players` WHERE id NOT IN (SELECT deceased_id FROM `kills`) AND `is_playing` = 1";
  $result = $pdo->query($sql);
  if ($gameStarted && $result && $result->fetch()["alive"] <= 2) {
  	$gameFinished = true;

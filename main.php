@@ -232,7 +232,7 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
         <h2 class="text-center">Beste moordenaars</h2>
 <?php
 if ($gameStarted) {
-  $stmt = $pdo->prepare("SELECT p.name, k.killer_id, COUNT(*) as nr FROM kills k, players p WHERE p.id=k.killer_id GROUP BY killer_id ORDER BY nr LIMIT 10");
+  $stmt = $pdo->prepare("SELECT p.name, k.killer_id, COUNT(*) as nr FROM kills k, players p WHERE p.id=k.killer_id GROUP BY killer_id ORDER BY nr DESC LIMIT 10");
   $stmt->execute();
   $results=$stmt->fetchAll();
   if ($results) {
