@@ -26,11 +26,11 @@ if ($name === false) {
 }
 
 // insert into players list
-$stmt = $pdo->prepare('INSERT INTO `players`(`beer`, `name`, `own_code`, `id_to_kill`, `is_dead`, `is_playing`) VALUES (:beer, :name, NULL, NULL, 0, 1) ON DUPLICATE KEY UPDATE `is_playing`=1');
+$stmt = $pdo->prepare('INSERT INTO `players`(`beer`, `name`, `own_code`, `id_to_kill`, `is_playing`) VALUES (:beer, :name, NULL, NULL, 1) ON DUPLICATE KEY UPDATE `is_playing`=1');
 $success = $stmt->execute([':beer' => $beer, ':name' => $name]);
 if ($success) {
 	//update session variables and redirect
-	handle_session($beer, $pdo);
+	update_session($beer, $pdo);
 	header("location: main.php");
 	exit();
 } else {

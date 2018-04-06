@@ -59,7 +59,7 @@ if (isset($_SESSION["beer"]) && $_SESSION["beer"] === "admin") {
             } elseif ($peopleWithoutTargetOrCode == 0) {
               echo "Er is niemand zonder code of target.<br> <strong>Het spel kan beginnen!</strong> Je hoeft nu niets meer te doen (tenzij er nieuwe mensen bijkomen). ";
             } else {
-              echo "Er zijn op dit moment nog " . $peopleWithoutTargetOrCode . " mensen zonder target of code. Resetten en opnieuw aanmaken!";
+              echo "Er zijn op dit moment nog <strong>" . $peopleWithoutTargetOrCode . " mensen zonder target of code</strong>. Resetten en opnieuw aanmaken!";
             } ?><br>
             <a href="begin_game.php?function=reset_all" class="btn btn-danger my-2">Reset targets en codes</a>
             <a href="begin_game.php?function=reset_kills" class="btn btn-danger my-2">Reset Kills</a>
@@ -145,12 +145,16 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
 } if ($_SESSION["is_playing"] && $_SESSION["is_dead"]) {
   $killer = null;
   $date = null;
-  $stmt = $pdo->prepare("SELECT p.name, k.time FROM kills k INNER JOIN players p ON k.`killer_id` = p.id WHERE k.deceased_id = :my_id");
+  $stmt = $pdo->prepare("SELECT p.name, k.time FROM kills k LEFT JOIN players p ON k.`killer_id` = p.id WHERE k.deceased_id = :my_id");
   $stmt->execute((array(":my_id" => $_SESSION["id"])));
   $result=$stmt->fetch();
   if ($result) {
-    $killer = $result["name"];
     $date = $result["time"];
+    if (isset($result["killer"])) {
+      $killer = $result["killer"];
+    } else {
+      $killer = "het eind van de ronde (omdat je de afgelopen week geen kills had)";
+    }
   }
 ?>
   <div class="row">
@@ -170,7 +174,7 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
             <?php
             // TODO fix murders
               $myId = $_SESSION["id"];
-              $stmt = $pdo->prepare("SELECT k.deceased_id, k.killer_id, k.time, p1.name AS killername, p2.name AS deceasedname FROM kills k JOIN players p1 ON p1.id = k.killer_id JOIN players p2 ON p2.id = k.deceased_id WHERE deceased_id=? OR killer_id=?");
+              $stmt = $pdo->prepare("SELECT k.deceased_id, k.killer_id, k.time, p1.name AS killername, p2.name AS deceasedname FROM kills k LEFT JOIN players p1 ON p1.id = k.killer_id JOIN players p2 ON p2.id = k.deceased_id WHERE deceased_id=? OR killer_id=?");
               $stmt->execute(array($myId,$myId));
               $results = $stmt->fetchAll();
               if ($results) {
@@ -179,7 +183,12 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
                   if ($row["killer_id"] == $myId) {
                     echo "<li>Je hebt <strong>" . $row["deceasedname"] . "</strong> vermoord op <strong>" . $row["time"] . "</strong>.</li>";
                   } else {
-                    echo "<li>Je bent vermoord door <strong>" . $row["killername"] . "</strong> op <strong>" . $row["time"] . "</strong>.</li>";
+                    if (isset($row["killername"])) {
+                      $killer = $row["killername"];
+                    } else {
+                      $killer = "het eind van de ronde (omdat je de afgelopen week geen kills had)";
+                    }
+                    echo "<li>Je bent vermoord door <strong>" . $killer . "</strong> op <strong>" . $row["time"] . "</strong>.</li>";
                   }
                 }
                 echo "</ul>";
@@ -189,7 +198,7 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
         </div>
 <?php
 // signup before game has started
-} if ($_SESSION["is_playing"] === false && $gameStarted === false) {
+} if ($_SESSION["is_playing"] === false && $gameStarted === false && $_SESSION["beer"] !== "admin") {
 ?>
         <div class="row">
           <div class="col-12 p-3">          
