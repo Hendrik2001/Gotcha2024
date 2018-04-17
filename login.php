@@ -40,7 +40,7 @@ if (!isset($_POST["inputBeer"]) || !isset($_POST["inputWachtwoord"])) {
 	$pass = $_POST["inputWachtwoord"];
 	//$remember = $_POST["remember-me"];
 
-	[$loggedin, $session, $errer] = loginToSite($beer, $pass);
+	list($loggedin, $session, $errer) = loginToSite($beer, $pass);
 	if ($loggedin !== false) {
 		update_session($beer, $pdo);
 		header("Location: main.php");
