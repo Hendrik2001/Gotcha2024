@@ -1,7 +1,31 @@
 <?php
+require __DIR__ . '/vendor/autoload.php';
 include_once('includes/config.php');
 include_once('includes/settings.php');
 include_once('includes/session_functions.php');
+
+
+function loginToSite($username = null, $password = null)
+{
+    $session = new Requests_Session('http://www.vindicat.nl/');
+    $session->headers['Accept'] = 'text/html';
+
+    //login
+    if ($username != null) {
+        $postData = ['beernummer' => $username, 'password' => $password];
+        $r = $session->post('mijn-vindicat/login', [], $postData);
+        // strstr returns false or part of string!
+        $islogedin = strstr(
+                $r->body, '<a href="/mijn-vindicat/logout">Uitloggen</a>'
+            ) !== false;
+
+        return [$islogedin, $session, "Not a valid account"];
+    }
+
+    return [false, $session, "No Username given"];
+
+}
+
 
 session_start();
 // Check if we are logged in or are trying to login 
@@ -16,7 +40,7 @@ if (!isset($_POST["inputBeer"]) || !isset($_POST["inputWachtwoord"])) {
 	$pass = $_POST["inputWachtwoord"];
 	//$remember = $_POST["remember-me"];
 
-	$loggedin = login_to_site($beer, $pass);
+	[$loggedin, $session, $errer] = loginToSite($beer, $pass);
 	if ($loggedin !== false) {
 		update_session($beer, $pdo);
 		header("Location: main.php");
@@ -27,15 +51,5 @@ if (!isset($_POST["inputBeer"]) || !isset($_POST["inputWachtwoord"])) {
 	}
 }
 
-// TODO: login to vindicat.nl
-function login_to_site($beer, $pass) {
-	// log in as admin or with vindicat site
-	if (strtolower($beer) === "admin" && $pass === "ToverGotchaAdmin") {
-		return true;
-	} elseif ($beer === "admin" && $pass !== "ToverGotchaAdmin") {
-		return false;
-	}
-	return true;
-}
 
 ?>

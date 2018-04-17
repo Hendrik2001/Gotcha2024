@@ -1,0 +1,13 @@
+{
+    "name": "communicacie/tovergotcha",
+    "description": "Gotcha!!!",
+    "authors": [
+        {
+            "name": "Jurgen Nijland",
+            "email": "jurgennijland.96@gmail.com"
+        }
+    ],
+    "require": {
+        "rmccue/requests": "1.6.1"
+    }
+}
