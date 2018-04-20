@@ -12,7 +12,7 @@ $sql = "SELECT count(*) as `not_ready` FROM `players` WHERE `is_playing`=1 AND (
 $result = $pdo->query($sql);
 $peopleWithoutTargetOrCode = $result->fetchColumn();
 
-$timestampStart = 1524355140; //04/21/2018 @ 23:59pm (UTC) (zorg dat deze goed staat voor de functie hieronder)
+$timestampStart = 1524607140; //Wednesday, 25 April 2018 00:01:00 GMT+02:00 (Zie functie hieronder)
 if (time() > $timestampStart) {
 	if ($result !== false && $peopleWithoutTargetOrCode == 0) {
 		$gameStarted = true;
@@ -29,13 +29,13 @@ while ($endOfCurrentRound < time()) {
 }
 
 function printEndOfRound($week) {
-	$day = [21, 28, 5, 12, 19, 26, 2, 9];
-	$month = ["april", "april", "mei", "mei", "mei", "mei", "juni", "juni"];
-	echo "zaterdag " . $day[$week] . " " . $month[$week] . " om 23:59";
+	$day = [24, 1, 8, 15, 22, 29, 5, 12];
+	$month = ["april", "mei", "mei", "mei", "mei", "mei", "juni", "juni"];
+	echo "dinsdag " . $day[$week] . " " . $month[$week] . " om 23:59";
 }
 
 function printStartDate() {
-	echo "zaterdag 21 april om 23:59";
+	echo "dinsdag 24 april om 23:59";
 }
 
 
@@ -51,14 +51,14 @@ function printStartDate() {
 // echo(isDead(2));
 
 
- $gameStarted = true;
+// $gameStarted = true;
 
 // count number of active and alive players
- $sql = "SELECT count(*) as alive FROM `players` WHERE id NOT IN (SELECT deceased_id FROM `kills`) AND `is_playing` = 1";
- $result = $pdo->query($sql);
- if ($gameStarted && $result && $result->fetch()["alive"] <= 2) {
- 	$gameFinished = true;
- }
+$sql = "SELECT count(*) as alive FROM `players` WHERE id NOT IN (SELECT deceased_id FROM `kills`) AND `is_playing` = 1";
+$result = $pdo->query($sql);
+if ($gameStarted && $result && $result->fetch()["alive"] <= 2) {
+	$gameFinished = true;
+}
 // todo settings like gamestarted
 // round finished, tijd to reset
 ?>

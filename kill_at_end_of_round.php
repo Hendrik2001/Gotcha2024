@@ -1,8 +1,8 @@
 <?php
 include_once("includes/config.php");
-// if (php_sapi_name() !== "cli") {
-// 	die("This script needs to be ran from the command line.");
-// }
+if (php_sapi_name() !== "cli") {
+	die("This script needs to be ran from the command line.");
+}
 
 $startOfRound = date("Y-m-d H:i:s", time() - 7*24*60*60); // a week ago
 echo "Start of last round ".  $startOfRound . "<br>";

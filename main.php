@@ -215,8 +215,8 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
         <div class="row">
           <div class="col-12 p-3">         
             <h2> Afmelden </h2>
-            Je bent aangemeld voor Gotcha. Het begint op <strong><?php printStartDate() ?></strong>. Wil je je afmelden?
-            <a class="btn btn-danger" href="unsubscribe.php"> Afmelden </a>
+            Je bent aangemeld voor Gotcha. Het begint op <strong><?php printStartDate() ?></strong>. <!--Wil je je afmelden?
+            <a class="btn btn-danger" href="unsubscribe.php"> Afmelden </a>-->
           </div>
         </div>
 
