@@ -12,7 +12,7 @@ $sql = "SELECT count(*) as `not_ready` FROM `players` WHERE `is_playing`=1 AND (
 $result = $pdo->query($sql);
 $peopleWithoutTargetOrCode = $result->fetchColumn();
 
-$timestampStart = 1524607140; //Wednesday, 25 April 2018 00:01:00 GMT+02:00 (Zie functie hieronder)
+$timestampStart = 1524643200; //Wednesday, 25 April 2018 10:00:00 GMT+02:00 (Zie functie hieronder)
 if (time() > $timestampStart) {
 	if ($result !== false && $peopleWithoutTargetOrCode == 0) {
 		$gameStarted = true;
@@ -29,13 +29,13 @@ while ($endOfCurrentRound < time()) {
 }
 
 function printEndOfRound($week) {
-	$day = [24, 1, 8, 15, 22, 29, 5, 12];
+	$day = [25, 2, 9, 16, 23, 30, 6, 13];
 	$month = ["april", "mei", "mei", "mei", "mei", "mei", "juni", "juni"];
-	echo "dinsdag " . $day[$week] . " " . $month[$week] . " om 23:59";
+	echo "woensdag  " . $day[$week] . " " . $month[$week] . " om 10:00";
 }
 
 function printStartDate() {
-	echo "dinsdag 24 april om 23:59";
+	echo "woensdag  24 april om 23:59";
 }
 
 
