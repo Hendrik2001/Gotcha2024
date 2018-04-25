@@ -75,7 +75,7 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
         <div class="row">
           <div class="col-12 p-3">
             <h2>Je target is <strong class="px-2 secret" id="person" onclick="toggleSpoiler(this.id)" data-secret="<?php echo $_SESSION["target"]; ?>">klik om te tonen</strong></h2>
-            <p>Je iemand weet dat hij jouw target is, kan hij je ontwijken. Dus houd je target geheim tot je je slag slaat!</p>
+            <p>Als iemand weet dat hij jouw target is, kan hij je ontwijken. Dus houd je target geheim tot je je slag slaat!</p>
             <p>Je hebt nog tot <strong><?php printEndOfRound($week); ?></strong> om ten minste één persoon te vermoorden, anders lig je uit het spel.</p>
           </div>
         </div>
