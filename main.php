@@ -150,7 +150,7 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
   $result=$stmt->fetch();
   if ($result) {
     $phpdate = strtotime($result["time"]);
-    $formattedDate = "<strong>" .date("j F", $phpdate) . "</strong> om <strong>" . date("H:i") . "</strong>";
+    $formattedDate = "<strong>" .date("j F", $phpdate) . "</strong> om <strong>" . date("H:i", $phpdate) . "</strong>";
     if (isset($result["killer"])) {
       $killer = $result["killer"];
     } else {
@@ -182,7 +182,7 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
                 echo "<ul>";
                 foreach ($results as $row) {
                   $phpdate = strtotime($row["time"]);
-                  $formattedDate = "<strong>" .date("j F", $phpdate) . "</strong> om <strong>" . date("H:i") . "</strong>";
+                  $formattedDate = "<strong>" .date("j F", $phpdate) . "</strong> om <strong>" . date("H:i",$phpdate) . "</strong>";
                   if ($row["killer_id"] == $myId) {
                     echo "<li>Je hebt <strong>" . $row["deceasedname"] . "</strong> vermoord op ". $formattedDate .".</li>";
                   } else {
@@ -211,7 +211,7 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
                 echo "<ul>";
                 foreach ($results as $row) {
                   $phpdate = strtotime($row["time"]);
-                  echo "<li><strong>" . $row["killer"] . "</strong> heeft <strong>" . $row["deceased"] . "</strong> vermoord op <strong>" . date("j F", $phpdate) . "</strong> om <strong>" . date("H:i") . "</strong>.</li>";
+                  echo "<li><strong>" . $row["killer"] . "</strong> heeft <strong>" . $row["deceased"] . "</strong> vermoord op <strong>" . date("j F", $phpdate) . "</strong> om <strong>" . date("H:i",$phpdate) . "</strong>.</li>";
                 }
                 echo "</ul>";
               } else {
