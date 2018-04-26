@@ -268,14 +268,23 @@ if ($gameStarted) {
   $stmt = $pdo->prepare("SELECT p.name, k.killer_id, COUNT(*) as nr FROM kills k, players p WHERE p.id=k.killer_id GROUP BY killer_id ORDER BY nr DESC LIMIT 10");
   $stmt->execute();
   $results=$stmt->fetchAll();
+  $max = 9999; // arbitrarily high number
+  $index = 0; // displayed index
+  $actualIndex = 0; // actual index in list
   if ($results) {
     echo '<ol class="list-group d-flex pl-3">';
     foreach($results as $topkiller) {
+      $actualIndex += 1;
+      $nr = $topkiller["nr"];
+      if ($nr < $max) {
+        $index = $actualIndex;
+        $max = $nr;
+      }
       if ($topkiller['killer_id'] === $_SESSION['id']) {
-        echo '<li class="list-item border-bottom its-me">' . $topkiller['name'];
+        echo '<li class="list-item border-bottom its-me" value="' . $index .'">' . $topkiller['name'];
         echo '<span class="float-right font-weight-bold">'. $topkiller['nr'] .' 💀</span></li>';
       } else {
-        echo '<li class="list-item border-bottom">' . $topkiller['name'];
+        echo '<li class="list-item border-bottom" value="' . $index .'">' . $topkiller['name'];
         echo '<span class="float-right font-weight-bold">'. $topkiller['nr'] .' 💀</span></li>';
       }
     }
