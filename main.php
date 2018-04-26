@@ -144,12 +144,13 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
 // player already dead.
 } if ($_SESSION["is_playing"] && $_SESSION["is_dead"]) {
   $killer = null;
-  $date = null;
+  $formattedDate = null;
   $stmt = $pdo->prepare("SELECT p.name, k.time FROM kills k LEFT JOIN players p ON k.`killer_id` = p.id WHERE k.deceased_id = :my_id");
   $stmt->execute((array(":my_id" => $_SESSION["id"])));
   $result=$stmt->fetch();
   if ($result) {
-    $date = $result["time"];
+    $phpdate = strtotime($result["time"]);
+    $formattedDate = "<strong>" .date("j F", $phpdate) . "</strong> om <strong>" . date("H:i") . "</strong>";
     if (isset($result["killer"])) {
       $killer = $result["killer"];
     } else {
@@ -160,11 +161,11 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
   <div class="row">
           <div class="col-12 p-3">   
             <h2> Vermoord :( </h2>
-            Je bent helaas vermoord door <strong><?php echo $killer; ?></strong> op <strong><?php echo $date;?></strong>.
+            Je bent helaas vermoord door <strong><?php echo $killer; ?></strong> op <?php echo $formattedDate;?>.
           </div>
         </div>
 <?php
-// if player has played and game has started. show kills
+// if player has played and game has started. show kills and killfeed
 } if ($_SESSION["is_playing"] === true && $gameStarted === true) {
 ?>
         <div class="row">
@@ -180,18 +181,41 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
               if ($results) {
                 echo "<ul>";
                 foreach ($results as $row) {
+                  $phpdate = strtotime($row["time"]);
+                  $formattedDate = "<strong>" .date("j F", $phpdate) . "</strong> om <strong>" . date("H:i") . "</strong>";
                   if ($row["killer_id"] == $myId) {
-                    echo "<li>Je hebt <strong>" . $row["deceasedname"] . "</strong> vermoord op <strong>" . $row["time"] . "</strong>.</li>";
+                    echo "<li>Je hebt <strong>" . $row["deceasedname"] . "</strong> vermoord op ". $formattedDate .".</li>";
                   } else {
                     if (isset($row["killername"])) {
                       $killer = $row["killername"];
                     } else {
                       $killer = "het eind van de ronde (omdat je de afgelopen week geen kills had)";
                     }
-                    echo "<li>Je bent vermoord door <strong>" . $killer . "</strong> op <strong>" . $row["time"] . "</strong>.</li>";
+                    echo "<li>Je bent vermoord door <strong>" . $killer . "</strong> op " . $formattedDate . ".</li>";
                   }
                 }
                 echo "</ul>";
+              }
+            ?>
+          </div>
+        </div>
+        <!-- KILL FEED -->
+        <div class="row">
+          <div class="col-12 p-3">   
+            <h2> Killfeed </h2>
+            Dit zijn de laatste tien moorden:
+            <?php
+              $sql = "SELECT k.name as `killer`, d.name as `deceased`, time FROM `kills` INNER JOIN `players` k ON kills.killer_id=k.id INNER JOIN `players` d ON kills.deceased_id = d.id WHERE killer_id != -1 ORDER BY `time` DESC LIMIT 10 ";
+              $results = $pdo->query($sql)->fetchAll();
+              if ($results) {
+                echo "<ul>";
+                foreach ($results as $row) {
+                  $phpdate = strtotime($row["time"]);
+                  echo "<li><strong>" . $row["killer"] . "</strong> heeft <strong>" . $row["deceased"] . "</strong> vermoord op <strong>" . date("j F", $phpdate) . "</strong> om <strong>" . date("H:i") . "</strong>.</li>";
+                }
+                echo "</ul>";
+              } else {
+                echo "Er is nog niemand vermoord...";
               }
             ?>
           </div>
