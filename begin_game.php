@@ -51,7 +51,7 @@ echo "<a href=\"main.php\">Klik hier om terug naar de hoofdpagina te gaan</a>";
 function generate_targets($pdo) {
 	echo "Beginnen met het aanmaken van de targets...<br>";
 	$ids = [];
-	$sql = "SELECT id FROM `players` WHERE `is_playing`=1";
+	$sql = "SELECT id FROM `players` WHERE `is_playing`=1 AND `id` NOT IN (SELECT deceased_id FROM kills)";
 	$stmt = $pdo->prepare($sql);
 	$stmt->execute();
 	$result = $stmt->fetchAll();
