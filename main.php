@@ -145,7 +145,7 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
 } if ($_SESSION["is_playing"] && $_SESSION["is_dead"]) {
   $killer = null;
   $formattedDate = null;
-  $stmt = $pdo->prepare("SELECT p.name, k.time FROM kills k LEFT JOIN players p ON k.`killer_id` = p.id WHERE k.deceased_id = :my_id");
+  $stmt = $pdo->prepare("SELECT p.name as 'killer', k.time FROM kills k LEFT JOIN players p ON k.`killer_id` = p.id WHERE k.deceased_id = :my_id");
   $stmt->execute((array(":my_id" => $_SESSION["id"])));
   $result=$stmt->fetch();
   if ($result) {
