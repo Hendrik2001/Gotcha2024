@@ -145,7 +145,7 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
 } if ($_SESSION["is_playing"] && $_SESSION["is_dead"]) {
   $killer = null;
   $formattedDate = null;
-  $stmt = $pdo->prepare("SELECT p.name, k.time FROM kills k LEFT JOIN players p ON k.`killer_id` = p.id WHERE k.deceased_id = :my_id");
+  $stmt = $pdo->prepare("SELECT p.name as 'killer', k.time FROM kills k LEFT JOIN players p ON k.`killer_id` = p.id WHERE k.deceased_id = :my_id");
   $stmt->execute((array(":my_id" => $_SESSION["id"])));
   $result=$stmt->fetch();
   if ($result) {
@@ -203,19 +203,22 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
         <div class="row">
           <div class="col-12 p-3">   
             <h2> Killfeed </h2>
-            Dit zijn de laatste tien moorden:
+            De killfeed is uitgeschakeld omdat we bijna aan het einde van het spel toe zijn!
+            <!--Dit zijn de laatste tien moorden:-->
             <?php
-              $sql = "SELECT k.name as `killer`, d.name as `deceased`, time FROM `kills` INNER JOIN `players` k ON kills.killer_id=k.id INNER JOIN `players` d ON kills.deceased_id = d.id WHERE killer_id != -1 ORDER BY `time` DESC LIMIT 10 ";
-              $results = $pdo->query($sql)->fetchAll();
-              if ($results) {
-                echo "<ul>";
-                foreach ($results as $row) {
-                  $phpdate = strtotime($row["time"]);
-                  echo "<li><strong>" . $row["killer"] . "</strong> heeft <strong>" . $row["deceased"] . "</strong> vermoord op <strong>" . date("j F", $phpdate) . "</strong> om <strong>" . date("H:i",$phpdate) . "</strong>.</li>";
-                }
-                echo "</ul>";
-              } else {
-                echo "Er is nog niemand vermoord...";
+              if (false) {
+                  $sql = "SELECT k.name as `killer`, d.name as `deceased`, time FROM `kills` INNER JOIN `players` k ON kills.killer_id=k.id INNER JOIN `players` d ON kills.deceased_id = d.id WHERE killer_id != -1 ORDER BY `time` DESC LIMIT 10 ";
+                  $results = $pdo->query($sql)->fetchAll();
+                  if ($results) {
+                    echo "<ul>";
+                    foreach ($results as $row) {
+                      $phpdate = strtotime($row["time"]);
+                      echo "<li><strong>" . $row["killer"] . "</strong> heeft <strong>" . $row["deceased"] . "</strong> vermoord op <strong>" . date("j F", $phpdate) . "</strong> om <strong>" . date("H:i",$phpdate) . "</strong>.</li>";
+                    }
+                    echo "</ul>";
+                  } else {
+                    echo "Er is nog niemand vermoord...";
+                  }
               }
             ?>
           </div>
