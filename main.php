@@ -292,45 +292,6 @@ if ($gameStarted) {
   } else {
     echo "Er is nog niemand vermoord.";
   }
-?>
-        <!--<ol class="list-group d-flex pl-3">
-          <li class="list-item border-bottom its-me">Player 1
-            <span class="float-right font-weight-bold">5 💀</span>
-          </li>
-
-          <li class="list-item border-bottom">Player 2
-            <span class="float-right font-weight-bold">4 💀</span>
-          </li>
-
-          <li class="list-item border-bottom">Player 3
-            <span class="float-right font-weight-bold">3 💀</span>
-          </li>
-
-          <li class="list-item border-bottom">Player 4
-            <span class="float-right font-weight-bold">2 💀</span>
-          </li>
-
-          <li class="list-item border-bottom">Player 5
-            <span class="float-right font-weight-bold">1 💀</span>
-          </li>
-
-          <li class="list-item border-bottom">Player 6
-            <span class="float-right font-weight-bold">0 💀</span>
-          </li>
-          <li class="list-item border-bottom">Player 6
-            <span class="float-right font-weight-bold">0 💀</span>
-          </li>
-          <li class="list-item border-bottom">Player 6
-            <span class="float-right font-weight-bold">0 💀</span>
-          </li>
-          <li class="list-item border-bottom">Player 6
-            <span class="float-right font-weight-bold">0 💀</span>
-          </li>
-          <li class="list-item border-bottom">Player 6
-            <span class="float-right font-weight-bold">0 💀</span>
-          </li>
-        </ol>-->
-<?php
 } else {
 ?>
         Hier verschijnen de beste moordenaars, zodra het spel begonnen is!
