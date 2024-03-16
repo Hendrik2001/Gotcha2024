@@ -18,7 +18,7 @@ if (!isset($_SESSION["login"]) || $_SESSION["login"] !== true || !isset($_SESSIO
 if (isset($_GET["function"])) {
 	switch ($_GET["function"]) {
 		case "reset_codes":
-			reset_codes($pdo);
+            reset_codes($pdo);
 			break;
 		case "reset_targets":
 			reset_targets($pdo);

@@ -22,12 +22,12 @@
     <link rel="stylesheet" href="css/custom.css">
     <link rel="stylesheet" href="css/custom_login.css">
 
-    <title>Tover Gotcha - Login</title>
+    <title>Lustrum Gotcha - Login</title>
 </head>
 <body class="text-center">
-    <form class="form-signin" action="login.php" method="POST">
+    <form class="form-signin" action="login_minerva.php" method="POST">
       <img class="mb-4" src="https://getbootstrap.com/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
-      <h1 class="h3 mb-3 font-weight-normal">Tover presenteert vol trots... Gotcha!</h1>
+      <h1 class="h3 mb-3 font-weight-normal">De GoCo presenteert vol trots... Gotcha!</h1>
       <?php if ($error) { ?>
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
           <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>

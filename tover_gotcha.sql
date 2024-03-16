@@ -11,7 +11,8 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
-
+CREATE DATABASE IF NOT EXISTS ToverGotchaAdmin;
+USE ToverGotchaAdmin;
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -62,7 +63,7 @@ CREATE TABLE `members` (
 --
 
 INSERT INTO `members` (`beer`, `name`) VALUES
-(5, 'Pim de Vries'),
+(200063, 'Pim de Vries'),
 (6, 'Egbert Janssen');
 
 -- --------------------------------------------------------
@@ -88,9 +89,11 @@ INSERT INTO `players` (`id`, `beer`, `name`, `own_code`, `id_to_kill`, `is_playi
 (1, 1, 'Jari', 'CLUB-PK-HOEK-TITS', 1, 1),
 (2, 2, 'Jurgen', 'GM-LID-GAST-OOTJE', -1, 1),
 (3, 3, 'Peter', 'PLOEG-PIANO-TITS', -1, 1),
-(4, 4, 'Sharif', 'VO-KEI-CLUB-ADT', -1, 1),
+(4, 200063, 'Sharif', 'VO-KEI-CLUB-ADT', -1, 1),
 (30, 5, 'Pim de Vries', 'SUB3D-KNOR-BEER', -1, 1),
 (31, 6, 'Egbert Janssen', 'STUCA-SFEER-KEI', -1, 1);
+
+
 
 --
 -- Indexes for dumped tables
