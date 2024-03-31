@@ -19,12 +19,15 @@ function update_session($beer, $pdo) {
 	$player = $stmt->fetch();
 
 	if ($player) {
+
 		$name = $player["name"];
 		$own_code = $player["own_code"];
-		$is_playing = $player["is_playing"] === "1" ? true : false;
+		$is_playing = $player["is_playing"] === 1 ? true : false;
 		$id = $player["id"];
+//        die(strval($name));
+//
 
-		// retrieve target
+        // retrieve target
 		$target_id = $player["id_to_kill"];
 		$stmt = $pdo->prepare("SELECT name FROM players WHERE id=:target_id");
 		$stmt -> execute(["target_id"=>$target_id]);

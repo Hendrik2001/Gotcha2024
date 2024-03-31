@@ -1,5 +1,6 @@
 body {
-	background-image: linear-gradient( 135deg, #FCCF31 10%, #F55555 100%);
+	/*background-image: linear-gradient( 135deg, #BBEECC 10%, #F13E24 100%);*/
+	background-color: #BBEECC !important;
 }
 
 html {
@@ -11,7 +12,7 @@ html {
 }
 
 .border-bottom {
-	border-color: #F55555 !important;
+	border-color: #F13E24 !important;
 }
 
 .secret {
@@ -56,13 +57,13 @@ li {
 
 .btn-primary {
 	color: #000;
-	background-color: #FCCF31;
+	background-color: #F13E24;
 	border-color: #000;
 }
 
 .btn-primary:hover {
   color: #000;
-  background-color: #fbc813;
+  background-color: #F13E24;
   border-color: #000;
 }
 
@@ -72,14 +73,14 @@ li {
 
 .btn-primary.disabled, .btn-primary:disabled {
   color: #000;
-  background-color: #FCCF31;
-  border-color: #FCCF31;
+  background-color: #F13E24;
+  border-color: #F13E24;
 }
 
 .btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active,
 .show > .btn-primary.dropdown-toggle {
   color: #000;
-  background-color: #fbc813;
+  background-color: #F13E24;
   border-color: #000;
 }
 

@@ -28,7 +28,6 @@ else {
 		$nameKilled = $result["name"];
 		$codeKilled = $result["own_code"];
 		$idKilled = $result["id_killed"];
-
 		if ($code === $codeKilled) {
 			// valid kill
 			// add to kills table

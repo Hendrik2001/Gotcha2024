@@ -9,8 +9,8 @@ if (!isset($_SESSION["login"]) || $_SESSION["login"] !== true) {
   exit();
 }
 update_session($_SESSION["beer"], $pdo);
-echo $_SESSION['is_playing'];
 ?>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -65,6 +65,9 @@ if (isset($_SESSION["beer"]) && $_SESSION["beer"] === "admin") {
             <a href="begin_game.php?function=reset_all" class="btn btn-danger my-2">Reset targets en codes</a>
             <a href="begin_game.php?function=reset_kills" class="btn btn-danger my-2">Reset Kills</a>
             <a href="begin_game.php?function=generate_all" class="btn btn-success my-2">Genereer targets en codes</a>
+            <a href="kill_at_end_of_round.php" class="btn btn-danger my-2">Stop Ronde</a>
+
+
           </div>
         </div>
 

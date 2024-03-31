@@ -26,7 +26,7 @@
 </head>
 <body class="text-center">
     <form class="form-signin" action="login_minerva.php" method="POST">
-      <img class="mb-4" src="https://getbootstrap.com/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
+      <img class="mb-4" src='img/cropped-ML_logo_ver-1-1536x1244.png' alt="" width="100" height="100">
       <h1 class="h3 mb-3 font-weight-normal">De GoCo presenteert vol trots... Gotcha!</h1>
       <?php if ($error) { ?>
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
