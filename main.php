@@ -234,7 +234,7 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
         <div class="row">
           <div class="col-12 p-3">          
             <h2> Aanmelden </h2>
-            <p>Gotcha is nog niet begonnen. Het begint op <strong><?php printStartDate() ?></strong>. Wil je je aanmelden? (Kosten: &euro; 10,- op je beer)
+            <p>Gotcha is nog niet begonnen. Het begint op <strong><?php printStartDate() ?></strong>. Wil je je aanmelden? (Kosten: &euro; 10,- op je tentrekening)
             <a class="btn btn-success" href="subscribe.php"> Aanmelden </a>
           </div>
         </div>

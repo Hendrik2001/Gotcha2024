@@ -12,7 +12,7 @@ $sql = "SELECT count(*) as `not_ready` FROM `players` WHERE `is_playing`=1 AND (
 $result = $pdo->query($sql);
 $peopleWithoutTargetOrCode = $result->fetchColumn();
 
-$timestampStart = 1811820686; //Monday, 18 March 2019 23:59:00 GMT+01:00 (Zie functie hieronder)
+$timestampStart = 1711820686; //Monday, 18 March 2019 23:59:00 GMT+01:00 (Zie functie hieronder)
 if (time() > $timestampStart) {
 	if ($result !== false && $peopleWithoutTargetOrCode == 0) {
 		$gameStarted = true;

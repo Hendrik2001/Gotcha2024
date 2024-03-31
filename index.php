@@ -27,15 +27,15 @@
 <body class="text-center">
     <form class="form-signin" action="login_minerva.php" method="POST">
       <img class="mb-4" src='img/cropped-ML_logo_ver-1-1536x1244.png' alt="" width="100" height="100">
-      <h1 class="h3 mb-3 font-weight-normal">De GoCo presenteert vol trots... Gotcha!</h1>
+      <h1 class="h3 mb-3 font-weight-normal">Welkom bij Gotcha!</h1>
       <?php if ($error) { ?>
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
           <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
           <strong>Fout!</strong> <?php echo $error;?>
         </div>
       <?php } ?>
-      <label for="inputBeer" class="sr-only">Beernummer</label>
-      <input type="text" name="inputBeer" class="form-control" placeholder="Beernummer" required autofocus>
+      <label for="inputBeer" class="sr-only">Debiteurennummer</label>
+      <input type="text" name="inputBeer" class="form-control" placeholder="Debiteurennummer" required autofocus>
       <label for="inputWachtwoord" class="sr-only">Wachtwoord</label>
       <input type="password" name="inputWachtwoord" class="form-control" placeholder="Wachtwoord" required>
       <div class="checkbox mb-3">
