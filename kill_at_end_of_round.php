@@ -1,49 +1,66 @@
 <?php
 include_once("includes/config.php");
-//if (php_sapi_name() !== "cli") {
-//	die("This script needs to be ran from the command line.");
-//}
 
-$startOfRound = date("Y-m-d H:i:s", time() - 7*24*60*60); // a week ago
-echo "Start of last round ".  $startOfRound . "<br>";
-//die($startOfRound);
-// select all alive players who have no kills or for who the last kill was before the start of this round
-$sql = "SELECT players.id, players.name, players.id_to_kill, max(kills.time) AS lastkill FROM players LEFT JOIN kills ON players.id = kills.killer_id WHERE players.is_playing = 1 AND players.id NOT IN (SELECT deceased_id FROM kills) GROUP BY players.id HAVING (lastkill < ? OR lastkill IS NULL)";
-$stmt = $pdo->prepare($sql);
-$stmt->execute([$startOfRound]);
-$results = $stmt->fetchAll();
-echo "Retrieved all players to remove from game. (n = " . count($results) . ")<br>";
+$startOfRound = time() - 7*24*60*60; // a week ago
+echo "Start of last round ".  date("Y-m-d H:i:s", $startOfRound) . "<br>";
 
-if ($results) {
-	$sqlAddKill = "INSERT INTO kills (`killer_id`, `deceased_id`, `time`) VALUES (-1,:deceased_id,:time)";
-	$stmtAddKill = $pdo->prepare($sqlAddKill);
+$users = $db->getReference('users')->getValue() ?? [];
+$kills = $db->getReference('kills')->getValue() ?? [];
 
-	$sqlUpdateTarget = "UPDATE players SET `id_to_kill` = :idToKill WHERE `id_to_kill` = :id";
-	$stmtUpdateTarget = $pdo->prepare($sqlUpdateTarget);
+$toRemove = [];
 
-	$sqlRemoveOwnTarget = "UPDATE players SET `id_to_kill` = -1 WHERE `id`= :id";
-	$stmtRemoveOwnTarget = $pdo->prepare($sqlRemoveOwnTarget);
-
-	echo "SQL statements are prepared.<br>";
-	foreach($results as $row) {
-		// update
-		$name = $row["name"];
-		$id = $row["id"];
-		$idToKill = $row["id_to_kill"];
-		if ($stmtAddKill->execute(["deceased_id"=>$id, "time"=>date("Y-m-d H:i:s")]) === false) {
-			die("Er ging iets mis tijdens het toevoegen van de kill op " . $name . " (id = " . $id . ").");
-		}
-		if ($stmtUpdateTarget->execute(["idToKill" => $idToKill, "id"=>$id]) === false) {
-			die("Er ging iets mis tijdens het doorschuiven van het doelwit van " . $name . " (id = " . $id . ").");
-		}
-		if ($stmtRemoveOwnTarget->execute(["id"=>$id]) === false) {
-			die("Er ging iets mis tijdens het wissen van het eigen target van " . $name . " (id = " . $id . ").");
-		}
-		echo "Removed " .$name . " from the game<br>";
-
-	}
-} else {
-	echo "Nothing to remove. <br>"; 
+foreach ($users as $uid => $user) {
+    if (($user['is_playing'] ?? false) && ($user['status'] ?? 'alive') === 'alive' && ($user['role'] ?? 'player') !== 'admin') {
+        
+        // Find their last kill
+        $lastKillTime = null;
+        foreach ($kills as $k) {
+            if (($k['killer_id'] ?? '') === $uid) {
+                if ($lastKillTime === null || ($k['time'] ?? 0) > $lastKillTime) {
+                    $lastKillTime = ($k['time'] ?? 0);
+                }
+            }
+        }
+        
+        if ($lastKillTime === null || $lastKillTime < $startOfRound) {
+            $toRemove[] = $uid;
+        }
+    }
 }
 
-echo "<span style='color:green'>Done</span>";
+echo "Retrieved all players to remove from game. (n = " . count($toRemove) . ")<br>";
+
+if (count($toRemove) > 0) {
+    foreach ($toRemove as $uid) {
+        $user = $users[$uid] ?? [];
+        $name = $user['name'] ?? 'Onbekend';
+        $idToKill = $user['target_id'] ?? '-1';
+        
+        // Add kill record (killer_id = -1 means they died due to timeout)
+        $db->getReference('kills')->push([
+            'killer_id' => -1,
+            'deceased_id' => $uid,
+            'time' => time()
+        ]);
+        
+        // Find the person who was targeting this user, and point them to their target
+        foreach ($users as $otherUid => $otherUser) {
+            if (($otherUser['target_id'] ?? '') === $uid) {
+                $db->getReference('users/' . $otherUid . '/target_id')->set($idToKill);
+            }
+        }
+        
+        // Mark this user as dead
+        $db->getReference('users/' . $uid)->update([
+            'target_id' => '-1',
+            'status' => 'dead'
+        ]);
+        
+        echo "Removed " . $name . " from the game<br>";
+    }
+} else {
+    echo "Nothing to remove. <br>"; 
+}
+
+echo "<br><span style='color:green'>Done</span>";
+?>

@@ -3,7 +3,7 @@
 /*
  *	Retrieve and set session vars, such as name, id, etc
  */
-function update_session($beer, $pdo) {
+function update_session($beer, $db) {
 
 	// default values
 	$id = null;
@@ -13,33 +13,40 @@ function update_session($beer, $pdo) {
 	$is_dead = false;
 	$is_playing = false;
 
-	// retrieve player data if signed up
-	$stmt = $pdo->prepare("SELECT id, name, own_code, id_to_kill, is_playing FROM players WHERE beer=:beer");
-	$stmt->execute([":beer" => $beer]);
-	$player = $stmt->fetch();
+	// In Firebase, we find the user by their debiteurennummer (beer)
+    // The query returns an array of matching users (should just be one match)
+    $usersRef = $db->getReference('users')->orderByChild('debiteurennummer')->equalTo((string)$beer)->getSnapshot();
+    $userData = $usersRef->getValue();
 
-	if ($player) {
+	if ($userData && is_array($userData) && count($userData) > 0) {
+        // The key of the first element is the user's Firebase ID
+        $id = array_key_first($userData); 
+        $player = $userData[$id];
 
-		$name = $player["name"];
-		$own_code = $player["own_code"];
-		$is_playing = $player["is_playing"] === 1 ? true : false;
-		$id = $player["id"];
-//        die(strval($name));
-//
+		$name = $player["name"] ?? null;
+		$own_code = $player["secret_code"] ?? null;
+		$is_playing = ($player["is_playing"] ?? false);
 
-        // retrieve target
-		$target_id = $player["id_to_kill"];
-		$stmt = $pdo->prepare("SELECT name FROM players WHERE id=:target_id");
-		$stmt -> execute(["target_id"=>$target_id]);
-		$target = $stmt->fetchColumn();
+        // retrieve target's name
+		$target_id = $player["target_id"] ?? null;
+        if ($target_id && $target_id !== '-1') {
+            // Fetch target directly by their Firebase ID
+            $targetSnapshot = $db->getReference('users/' . $target_id)->getSnapshot();
+            $targetData = $targetSnapshot->getValue();
+            if ($targetData) {
+                $target = $targetData['name'] ?? null;
+            }
+        }
 
 		// check if dead
-		$stmt = $pdo->prepare("SELECT `id` FROM `kills` WHERE `deceased_id`=:my_id");
-		$stmt->execute(array(":my_id" => $id));
-		$result = $stmt->fetch();
-		if ($result !== false) {
-			$is_dead = true;
-		}
+        if (($player["status"] ?? 'alive') === 'dead') {
+            $is_dead = true;
+        }
+
+        // If they were marked admin, set that in session too
+        if (($player['role'] ?? 'player') === 'admin') {
+            $_SESSION['is_admin'] = true;
+        }
 	}
 
 

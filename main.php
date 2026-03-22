@@ -9,7 +9,7 @@ if (!isset($_SESSION["login"]) || $_SESSION["login"] !== true) {
   header("location: index.php");
   exit();
 }
-update_session($_SESSION["beer"], $pdo);
+update_session($_SESSION["beer"], $db);
 ?>
 
 <!doctype html>
@@ -38,10 +38,10 @@ if ($gameFinished) {
             <h2>Het spel is voorbij!</h2>
             Er leven nog maar twee mensen: <ul>
             <?php 
-              $sql = "SELECT name FROM `players` WHERE `is_playing` = 1 AND `id_to_kill` != -1";
-              $results = $pdo->query($sql)->fetchAll();
-              foreach($results as $row) {
-                echo "<li>" . $row["name"] . "</li>";
+              foreach($users as $uid => $row) {
+                if (($row['is_playing'] ?? false) && !empty($row['target_id']) && $row['target_id'] !== '-1' && ($row['status'] ?? 'alive') === 'alive') {
+                    echo "<li>" . htmlspecialchars($row["name"] ?? 'Onbekend') . "</li>";
+                }
               } ?>
             </ul>
           </div>
@@ -150,14 +150,18 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
 } if ($_SESSION["is_playing"] && $_SESSION["is_dead"]) {
   $killer = null;
   $formattedDate = null;
-  $stmt = $pdo->prepare("SELECT p.name as 'killer', k.time FROM kills k LEFT JOIN players p ON k.`killer_id` = p.id WHERE k.deceased_id = :my_id");
-  $stmt->execute((array(":my_id" => $_SESSION["id"])));
-  $result=$stmt->fetch();
-  if ($result) {
-    $phpdate = strtotime($result["time"]);
+  
+  $kills = $db->getReference('kills')->orderByChild('deceased_id')->equalTo($_SESSION["id"])->getValue();
+  
+  if ($kills && is_array($kills) && count($kills) > 0) {
+    $kill = reset($kills);
+    $phpdate = $kill["time"] ?? time();
     $formattedDate = "<strong>" .date("j F", $phpdate) . "</strong> om <strong>" . date("H:i", $phpdate) . "</strong>";
-    if (isset($result["killer"])) {
-      $killer = $result["killer"];
+    
+    $killerId = $kill["killer_id"] ?? -1;
+    if ($killerId !== -1) {
+      $killerData = $db->getReference('users/' . $killerId)->getValue();
+      $killer = $killerData["name"] ?? "Onbekend";
     } else {
       $killer = "het eind van de ronde (omdat je de afgelopen week geen kills had)";
     }
@@ -178,25 +182,33 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
             <h2> Overzicht </h2>
             Je bent betrokken geweest bij de volgende eliminaties:
             <?php
-            // TODO fix murders
               $myId = $_SESSION["id"];
-              $stmt = $pdo->prepare("SELECT k.deceased_id, k.killer_id, k.time, p1.name AS killername, p2.name AS deceasedname FROM kills k LEFT JOIN players p1 ON p1.id = k.killer_id JOIN players p2 ON p2.id = k.deceased_id WHERE deceased_id=? OR killer_id=?");
-              $stmt->execute(array($myId,$myId));
-              $results = $stmt->fetchAll();
-              if ($results) {
+              $myKills = [];
+              $allKills = $db->getReference('kills')->getValue() ?? [];
+              foreach ($allKills as $k) {
+                  if (($k['killer_id'] ?? '') === $myId || ($k['deceased_id'] ?? '') === $myId) {
+                      $myKills[] = $k;
+                  }
+              }
+
+              if (count($myKills) > 0) {
                 echo "<ul>";
-                foreach ($results as $row) {
-                  $phpdate = strtotime($row["time"]);
+                foreach ($myKills as $row) {
+                  $phpdate = $row["time"] ?? time();
                   $formattedDate = "<strong>" .date("j F", $phpdate) . "</strong> om <strong>" . date("H:i",$phpdate) . "</strong>";
-                  if ($row["killer_id"] == $myId) {
-                    echo "<li>Je hebt <strong>" . $row["deceasedname"] . "</strong> geëlimineerd op ". $formattedDate .".</li>";
+                  if (($row["killer_id"] ?? '') === $myId) {
+                    $deceasedData = $db->getReference('users/' . $row["deceased_id"])->getValue();
+                    $deceasedname = $deceasedData['name'] ?? 'Onbekend';
+                    echo "<li>Je hebt <strong>" . htmlspecialchars($deceasedname) . "</strong> geëlimineerd op ". $formattedDate .".</li>";
                   } else {
-                    if (isset($row["killername"])) {
-                      $killer = $row["killername"];
+                    $killerId = $row["killer_id"] ?? -1;
+                    if ($killerId !== -1 && $killerId !== "-1") {
+                      $killerData = $db->getReference('users/' . $killerId)->getValue();
+                      $killerName = $killerData["name"] ?? 'Onbekend';
                     } else {
-                      $killer = "het eind van de ronde (omdat je de afgelopen week niemand geëlimineerd hebt)";
+                      $killerName = "het eind van de ronde (omdat je de afgelopen week niemand geëlimineerd hebt)";
                     }
-                    echo "<li>Je bent geëlimineerd door <strong>" . $killer . "</strong> op " . $formattedDate . ".</li>";
+                    echo "<li>Je bent geëlimineerd door <strong>" . htmlspecialchars($killerName) . "</strong> op " . $formattedDate . ".</li>";
                   }
                 }
                 echo "</ul>";
@@ -212,13 +224,26 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
             <!--Dit zijn de laatste tien moorden:-->
             <?php
               if (true) {
-                  $sql = "SELECT k.name as `killer`, d.name as `deceased`, time FROM `kills` INNER JOIN `players` k ON kills.killer_id=k.id INNER JOIN `players` d ON kills.deceased_id = d.id WHERE killer_id != -1 ORDER BY `time` DESC LIMIT 10 ";
-                  $results = $pdo->query($sql)->fetchAll();
-                  if ($results) {
+                  $allKills = $db->getReference('kills')->orderByChild('time')->limitToLast(10)->getValue() ?? [];
+                  // Convert to array and sort DESC
+                  usort($allKills, function($a, $b) {
+                      return ($b['time'] ?? 0) - ($a['time'] ?? 0);
+                  });
+
+                  if (count($allKills) > 0) {
                     echo "<ul>";
-                    foreach ($results as $row) {
-                      $phpdate = strtotime($row["time"]);
-                      echo "<li><strong>" . $row["killer"] . "</strong> heeft <strong>" . $row["deceased"] . "</strong> geëlimineerd op <strong>" . date("j F", $phpdate) . "</strong> om <strong>" . date("H:i",$phpdate) . "</strong>.</li>";
+                    foreach ($allKills as $row) {
+                      $killerId = $row['killer_id'] ?? -1;
+                      if ($killerId == -1 || $killerId == "-1") continue;
+                      
+                      $phpdate = $row["time"];
+                      $kData = $db->getReference('users/' . $killerId)->getValue();
+                      $dData = $db->getReference('users/' . $row['deceased_id'])->getValue();
+                      
+                      $kName = htmlspecialchars($kData['name'] ?? 'Onbekend');
+                      $dName = htmlspecialchars($dData['name'] ?? 'Onbekend');
+                      
+                      echo "<li><strong>" . $kName . "</strong> heeft <strong>" . $dName . "</strong> geëlimineerd op <strong>" . date("j F", $phpdate) . "</strong> om <strong>" . date("H:i",$phpdate) . "</strong>.</li>";
                     }
                     echo "</ul>";
                   } else {
@@ -273,28 +298,38 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
         <h2 class="text-center">Beste jagers</h2>
 <?php
 if ($gameStarted) {
-  $stmt = $pdo->prepare("SELECT p.name, k.killer_id, COUNT(*) as nr FROM kills k, players p WHERE p.id=k.killer_id GROUP BY killer_id ORDER BY nr DESC LIMIT 10");
-  $stmt->execute();
-  $results=$stmt->fetchAll();
-  $max = 9999; // arbitrarily high number
-  $index = 0; // displayed index
-  $actualIndex = 0; // actual index in list
-  if ($results) {
+  $allUsersForRank = $db->getReference('users')->orderByChild('kill_count')->limitToLast(10)->getValue() ?? [];
+  // Sort descending
+  uasort($allUsersForRank, function($a, $b) {
+      return ($b['kill_count'] ?? 0) - ($a['kill_count'] ?? 0);
+  });
+  
+  $max = 9999;
+  $index = 0;
+  $actualIndex = 0;
+  
+  $hasKills = false;
+  foreach($allUsersForRank as $u) { 
+      if (($u['kill_count'] ?? 0) > 0) $hasKills = true; 
+  }
+
+  if ($hasKills) {
     echo '<ol class="list-group d-flex pl-3">';
-    foreach($results as $topkiller) {
+    foreach($allUsersForRank as $uid => $topkiller) {
+      $nr = $topkiller["kill_count"] ?? 0;
+      if ($nr == 0) continue;
+      
       $actualIndex += 1;
-      $nr = $topkiller["nr"];
       if ($nr < $max) {
         $index = $actualIndex;
         $max = $nr;
       }
-      if ($topkiller['killer_id'] === $_SESSION['id']) {
-        echo '<li class="list-item border-bottom its-me" value="' . $index .'">' . $topkiller['name'];
-        echo '<span class="float-right font-weight-bold">'. $topkiller['nr'] .' 💀</span></li>';
-      } else {
-        echo '<li class="list-item border-bottom" value="' . $index .'">' . $topkiller['name'];
-        echo '<span class="float-right font-weight-bold">'. $topkiller['nr'] .' 💀</span></li>';
-      }
+      
+      $isMe = ($uid === $_SESSION['id']);
+      $meClass = $isMe ? ' its-me' : '';
+      
+      echo '<li class="list-item border-bottom' . $meClass . '" value="' . $index .'">' . htmlspecialchars($topkiller['name'] ?? 'Onbekend');
+      echo '<span class="float-right font-weight-bold">'. $nr .' 💀</span></li>';
     }
     echo '</ol>';
   } else {
