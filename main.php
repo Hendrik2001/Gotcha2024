@@ -4,6 +4,7 @@ include_once('includes/settings.php');
 include_once('includes/config.php');
 include_once('includes/session_functions.php');
 
+
 if (!isset($_SESSION["login"]) || $_SESSION["login"] !== true) {
   header("location: index.php");
   exit();
@@ -80,19 +81,19 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
           <div class="col-12 p-3">
             <h2>Je target is <strong class="px-2 secret" id="person" onclick="toggleSpoiler(this.id)" data-secret="<?php echo $_SESSION["target"]; ?>">klik om te tonen</strong></h2>
             <p>Als iemand weet dat hij jouw target is, kan hij je ontwijken. Dus houd je target geheim tot je je slag slaat!</p>
-            <p>Je hebt nog tot <strong><?php printEndOfRound($week); ?></strong> om ten minste één persoon te vermoorden, anders lig je uit het spel.</p>
+            <p>Je hebt nog tot <strong><?php printEndOfRound($week); ?></strong> om ten minste één persoon te elimineren, anders lig je uit het spel.</p>
           </div>
         </div>
         <div class="row">
           <div class="col-12 p-3">
             <h2>Je geheime code is <strong class="px-2 secret" id="code" onclick="toggleSpoiler(this.id)" data-secret="<?php echo $_SESSION["own_code"]; ?>">klik om te tonen</strong></h2>
-            Als je target deze code ontdekt kan hij je doodmaken, dus houd hem geheim tot je vermoord bent!
+            Als je target deze code ontdekt kan hij je doodmaken, dus houd hem geheim tot je geëlimineerd bent!
           </div>
         </div>
         <div class="row">
           <div class="col-12 p-3">
-            <h2> Ik heb iemand vermoord! </h2>
-            Als je iemand hebt vermoord, voer dan hieronder zijn of haar code in en druk op verzenden. Je krijgt dan direct te horen wie je hierna moet vermoorden.
+            <h2> Ik heb iemand geëlimineerd! </h2>
+            Als je iemand hebt geëlimineerd, voer dan hieronder zijn of haar code in en druk op verzenden. Je krijgt dan direct te horen wie je hierna moet elimineren.
             <form class="form-inline pt-3" id="submit-code-form" action="">
               <div class="row">
                 <div class="col">
@@ -136,7 +137,7 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
                 </button>
               </div>
               <div class="modal-body">
-                Je hebt je target vermoord! Je nieuwe target is bekend.
+                Je hebt je target geëlimineerd! Je nieuwe target is bekend.
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-success" data-dismiss="modal">Sluiten</button>
@@ -164,8 +165,8 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
 ?>
   <div class="row">
           <div class="col-12 p-3">   
-            <h2> Vermoord :( </h2>
-            Je bent helaas vermoord door <strong><?php echo $killer; ?></strong> op <?php echo $formattedDate;?>.
+            <h2> Geëlimineerd :( </h2>
+            Je bent helaas geëlimineerd door <strong><?php echo $killer; ?></strong> op <?php echo $formattedDate;?>.
           </div>
         </div>
 <?php
@@ -175,7 +176,7 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
         <div class="row">
           <div class="col-12 p-3">   
             <h2> Overzicht </h2>
-            Je bent betrokken geweest bij de volgende moorden:
+            Je bent betrokken geweest bij de volgende eliminaties:
             <?php
             // TODO fix murders
               $myId = $_SESSION["id"];
@@ -188,14 +189,14 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
                   $phpdate = strtotime($row["time"]);
                   $formattedDate = "<strong>" .date("j F", $phpdate) . "</strong> om <strong>" . date("H:i",$phpdate) . "</strong>";
                   if ($row["killer_id"] == $myId) {
-                    echo "<li>Je hebt <strong>" . $row["deceasedname"] . "</strong> vermoord op ". $formattedDate .".</li>";
+                    echo "<li>Je hebt <strong>" . $row["deceasedname"] . "</strong> geëlimineerd op ". $formattedDate .".</li>";
                   } else {
                     if (isset($row["killername"])) {
                       $killer = $row["killername"];
                     } else {
-                      $killer = "het eind van de ronde (omdat je de afgelopen week geen kills had)";
+                      $killer = "het eind van de ronde (omdat je de afgelopen week niemand geëlimineerd hebt)";
                     }
-                    echo "<li>Je bent vermoord door <strong>" . $killer . "</strong> op " . $formattedDate . ".</li>";
+                    echo "<li>Je bent geëlimineerd door <strong>" . $killer . "</strong> op " . $formattedDate . ".</li>";
                   }
                 }
                 echo "</ul>";
@@ -206,22 +207,22 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
         <!-- KILL FEED -->
         <div class="row">
           <div class="col-12 p-3">   
-            <h2> Killfeed </h2>
-            De killfeed is uitgeschakeld omdat we bijna aan het einde van het spel toe zijn!
+            <h2> Ranglijst </h2>
+            <!--De ranglijst is uitgeschakeld omdat we bijna aan het einde van het spel toe zijn!-->
             <!--Dit zijn de laatste tien moorden:-->
             <?php
-              if (false) {
+              if (true) {
                   $sql = "SELECT k.name as `killer`, d.name as `deceased`, time FROM `kills` INNER JOIN `players` k ON kills.killer_id=k.id INNER JOIN `players` d ON kills.deceased_id = d.id WHERE killer_id != -1 ORDER BY `time` DESC LIMIT 10 ";
                   $results = $pdo->query($sql)->fetchAll();
                   if ($results) {
                     echo "<ul>";
                     foreach ($results as $row) {
                       $phpdate = strtotime($row["time"]);
-                      echo "<li><strong>" . $row["killer"] . "</strong> heeft <strong>" . $row["deceased"] . "</strong> vermoord op <strong>" . date("j F", $phpdate) . "</strong> om <strong>" . date("H:i",$phpdate) . "</strong>.</li>";
+                      echo "<li><strong>" . $row["killer"] . "</strong> heeft <strong>" . $row["deceased"] . "</strong> geëlimineerd op <strong>" . date("j F", $phpdate) . "</strong> om <strong>" . date("H:i",$phpdate) . "</strong>.</li>";
                     }
                     echo "</ul>";
                   } else {
-                    echo "Er is nog niemand vermoord...";
+                    echo "Er is nog niemand geëlimineerd...";
                   }
               }
             ?>
@@ -258,7 +259,7 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
       
         <div class="row">
           <div class="col-12 p-3">
-            <h2> Helaas Pindakaas </h2>
+            <h2> Helaas </h2>
             Gotcha is al begonnen...
           </div>
         </div>
@@ -269,7 +270,7 @@ if ($_SESSION["is_playing"] === true && $_SESSION["is_dead"] === false && $gameS
 
       </div>
       <div class="col-lg-4 bg-light p-3">
-        <h2 class="text-center">Beste moordenaars</h2>
+        <h2 class="text-center">Beste jagers</h2>
 <?php
 if ($gameStarted) {
   $stmt = $pdo->prepare("SELECT p.name, k.killer_id, COUNT(*) as nr FROM kills k, players p WHERE p.id=k.killer_id GROUP BY killer_id ORDER BY nr DESC LIMIT 10");
@@ -297,11 +298,11 @@ if ($gameStarted) {
     }
     echo '</ol>';
   } else {
-    echo "Er is nog niemand vermoord.";
+    echo "Er is nog niemand geëlimineerd.";
   }
 } else {
 ?>
-        Hier verschijnen de beste moordenaars, zodra het spel begonnen is!
+        Hier verschijnen de beste jagers, zodra het spel begonnen is!
 <?php
 }
 ?>
@@ -340,19 +341,67 @@ if ($gameStarted) {
     $('#successModal').on('hidden.bs.modal', function () {
       location.reload();
     });
-
     function errorCallback(result) {
-      var error = JSON.parse(result.responseText)["error"];
-      console.error(error);
-      $("#errorModal").modal();
-      $("#errorModal .modal-body").text(error);
+        console.log("Response Text:", result.responseText);
+    
+        try {
+            var error = JSON.parse(result.responseText)["error"];
+            console.error(error);
+            $("#errorModal").modal();
+            $("#errorModal .modal-body").text(error);
+        } catch (e) {
+            console.error("Error parsing JSON response: ", e);
+            // Handle parsing error, maybe log the raw responseText
+            $("#errorModal").modal();
+            $("#errorModal .modal-body").text("An error occurred. Please try again later.");
+        }
     }
-
+    // function errorCallback(result) {
+    //   var error = JSON.parse(result.responseText)["error"];
+    //   console.error(error);
+    //   $("#errorModal").modal();
+    //   $("#errorModal .modal-body").text(error);
+    // }
+    
+    // function errorCallback(result) {
+    //     $echo result
+    //   try {
+    //     // Try parsing the response as JSON
+    //     var error = JSON.parse(result.responseText)["error"];
+    //     // If the parsing is successful, handle the error as before
+    //     console.error(error);
+    //     $("#errorModal").modal();
+    //     $("#errorModal .modal-body").text(error);
+    //   } catch (e) {
+    //     // If parsing fails, handle the parsing error
+    //     console.error("Error parsing JSON response: ", e);
+    //     // You can update the error modal to show a generic error message
+    //     $("#errorModal").modal();
+    //     $("#errorModal .modal-body").text(error);
+    //   }
+    // }    
     function successCallback(result) {
       var target = JSON.parse(result)["new_target"];
       $("#successModal").modal();
-      $("#successModal .modal-body").html("Je hebt je target vermoord! Je nieuwe target is <strong>" + target + "</strong>.");
+      $("#successModal .modal-body").html("Je hebt je target geëlimineerd! Je nieuwe target is <strong>" + target + "</strong>.");
     }
+    // function successCallback(result) {
+    //   try {
+    //     // Attempt to parse the response as JSON
+    //     var parsedResult = JSON.parse(result);
+    //     var newTarget = parsedResult["new_target"];
+    //     // Assuming the response is valid, update the success modal as before
+    //     $("#successModal").modal();
+    //     $("#successModal .modal-body").html("Je hebt je target vermoord! Je nieuwe target is <strong>" + newTarget + "</strong>.");
+    //   } catch (e) {
+    //     // If parsing fails, log the error and handle it
+    //     console.error("Error parsing JSON response: ", e);
+    //     // Here, you could show an error or a generic success message
+    //     $("#successModal").modal();
+    //     $("#successModal .modal-body").text("Your action was successful, but the response could not be processed.");
+    //   }
+    // }
+
 
     function toggleSpoiler(id) {
       var id = $("#" + id);

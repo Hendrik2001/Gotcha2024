@@ -44,7 +44,7 @@
         </label>-->
       </div>
       <button class="btn btn-lg btn-primary btn-block" type="submit">Inloggen</button>
-      <p class="mt-5 mb-3">&copy; Communicacie 2018</p>
+      <p class="mt-5 mb-3">&copy; 42e Lustrum</p>
     </form>
 
 <!-- Optional JavaScript -->

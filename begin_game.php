@@ -108,7 +108,7 @@ function generate_codes($length = 10, $pdo, $useFancyPasswords = false) {
 	$max = strlen($characters) - 1;
 
 	if ($useFancyPasswords) {
-		$characters = ["GM","27","1815","VAP","MUFI","1815","VO","MF","CORPS","KROEG","LID","MEUI","PAIP","PLOEG","HOEK","FOET","HO","OH","BEER","UB","CZ","HP","RHINO","BUIS","LAIR","ICE","BAV","KRAT","BIER","BLAD","KNOR","PAND","MENSA","SUB3D","CLUB","JC","HUIS","PANDA","SUSHI","KAAL","BACO","EKZ","HENK","PK","PIANO","STUCA","JORIS","JAS","DAS","VINDI","BAL","RIET","ADT","IT","CTTIT","SOA","KEI","PILS","GK","SFEER","GAST","AMIGO","PIK","LEDEN","MUTUA","LID","FIDES","VALTHO","RAPTAP","TGIF","OOTJE","RAKEN","BRAK","VOLAF","CHICK","PEUK","SOCCIE","SENAAT","POLIT"];
+		$characters = ['1814',  '1726', 'VO', 'CORPS', 'TENT', 'LID', 'EILAND', 'OVAAL', 'LEESTAFEL', 'HAARD', 'WANDTAP', 'FOYER', 'LUIFEL','BORDES', 'PAS', 'SJAARS', 'NES', 'FEUT', 'BAK', 'PITCHER', 'BUFFET', 'BIER', 'STRAALJAGER', 'GELUK', 'LUSTRUM','DAKJE', 'CLUB', 'HUIS', 'HIFI', 'KAAL', 'UIL', 'JAS', 'DAS', 'ZOOIEN', 'SOA', 'LEIDEN', 'LESDEUX', 'MINERVA', 'SOCIËTEIT', 'VIRTUS', 'CONCORDIA', 'FIDES'];
 		$max = count($characters) - 1;
 	}
 

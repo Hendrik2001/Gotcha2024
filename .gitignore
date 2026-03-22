@@ -1,2 +1,5 @@
 /vendor/
 includes/config.php
+.DS_Store
+.idea/
+cookie.txt
