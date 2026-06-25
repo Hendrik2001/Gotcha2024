@@ -1,6 +1,6 @@
 # Gotcha 2024
 
-A full-stack real-world elimination game platform, built and self-hosted for a university social event with **600 active participants** and **€5,500+ in prizes**.
+A full-stack real-world elimination game platform, **built and self-hosted** for a university social event with **600 active participants** and **€5,500+ in prizes**.
 
 ## What Is Gotcha?
 
