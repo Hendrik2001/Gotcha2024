@@ -6,7 +6,7 @@ A full-stack real-world elimination game platform, built and self-hosted for a u
 
 Gotcha is a live elimination game: every player is secretly assigned a *target*. To eliminate your target, you must take a candid photo with them — without them realizing they're being hunted. Submit the photo, inherit your target's target, and keep hunting until one player remains.
 
-This platform was designed and built from scratch to run the entire game end-to-end: registration, target assignment, kill verification, round management, and prize tracking.
+This platform was designed and built to run the entire game end-to-end: registration, target assignment, kill verification, round management, and prize tracking.
 
 ## Scale
 
